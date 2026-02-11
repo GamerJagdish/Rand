@@ -19,7 +19,7 @@ as you may know the way to generate random stuff is usually done by rand functio
 3. Enjoy!
 
 ## Access Rand
-Click me the link below 👇
+Click me the link below 👇 <br/>
 [https://rand.gamerjagdish.com/](https://rand.gamerjagdish.com/)
 
 ## Contributing
