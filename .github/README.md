@@ -3,9 +3,9 @@
 I made this website because i like to do random things thus the Rand was born.
 as you may know the way to generate random stuff is usually done by rand function that's why the website's name is rand.
 <p align="center">
-  <a href="https://github.com/GamerJagdish/Rand/commits"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/GamerJagdish/Rand?style=flat-square"></a>
-  <a href="https://github.com/GamerJagdish/Rand/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/GamerJagdish/Rand?style=flat-square"></a>
-  <a href="../LICENSE"><img alt="License: GPLv3" src="https://img.shields.io/github/license/GamerJagdish/Rand?style=flat-square"></a>
+  <a href="https://github.com/GamerJagdish/Rand/commits"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/gamerjagdish/rand?style=for-the-badge"></a>
+  <a href="https://github.com/GamerJagdish/Rand/stargazers"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/gamerjagdish/rand?style=for-the-badge"></a>
+  <a href="../LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/gamerjagdish/rand?style=for-the-badge"></a>
 </p>
 
 ## Features
