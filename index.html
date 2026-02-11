@@ -2,153 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Noise</title>
     <style>
-        /* CSS: The Visuals */
         :root {
             --bg-color: #000000;
-            --text-color: #f0f0f0;
-            --accent-color: #ffffff;
-            --font-stack: 'Courier New', Courier, monospace; /* Monospace is key for this look */
+            --text-color: #e0e0e0;
+            --font-stack: 'Courier New', Courier, monospace; 
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-stack);
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Prevents scrollbars */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            overflow: hidden; /* No scrolling allowed */
+            font-family: var(--font-stack);
         }
 
-        /* The wall of text */
-        #data-stream {
-            width: 90%;
-            height: 70%;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            word-break: break-all; /* Ensures text wraps randomly */
-            opacity: 0.8;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); /* Subtle glow */
+        /* The Infinite Wall of Text */
+        #noise-wall {
+            position: fixed;
+            inset: 0; /* Top, Right, Bottom, Left = 0. Covers entire screen. */
+            z-index: 1; /* Sits at the bottom */
+            color: var(--text-color);
+            font-size: 14px; /* Small enough for density on mobile */
+            line-height: 14px; /* Tight line height for block effect */
+            word-break: break-all; /* Forces wrapping anywhere */
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-align: justify;
-            user-select: none; /* Adds to the 'static' feel */
-            transition: opacity 0.2s ease;
+            pointer-events: none; /* Allows clicks to pass through if needed, though mostly visual */
+            opacity: 0.9;
+            user-select: none;
         }
 
         /* The Button */
         #rand-btn {
-            position: absolute;
-            bottom: 3rem;
-            background: transparent;
-            color: var(--text-color);
+            position: fixed;
+            bottom: 30px; /* Floats above bottom edge */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10; /* Sits above the text */
+            
+            background-color: #000; /* Solid black to block text behind it */
+            color: #fff;
+            border: 1px solid #fff;
+            
             font-family: var(--font-stack);
             font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            padding: 10px 30px;
-            border: 1px solid var(--text-color);
+            font-weight: 900;
+            letter-spacing: 1px;
+            padding: 12px 35px;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
-        }
-
-        #rand-btn:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0,0,0,0.8); /* Shadow to separate from noise */
+            transition: all 0.1s ease;
         }
 
         #rand-btn:active {
-            transform: scale(0.95);
+            background-color: #fff;
+            color: #000;
+            transform: translateX(-50%) scale(0.95);
         }
 
-        /* Glitch animation class */
-        .glitch {
-            animation: glitch-anim 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
+        /* Glitch Animation */
+        .glitch-effect {
+            animation: flash 0.15s steps(2, start) infinite;
         }
 
-        @keyframes glitch-anim {
-            0% { transform: translate(0) }
-            20% { transform: translate(-2px, 2px) }
-            40% { transform: translate(-2px, -2px) }
-            60% { transform: translate(2px, 2px) }
-            80% { transform: translate(2px, -2px) }
-            100% { transform: translate(0) }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; filter: invert(1); }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div id="data-stream"></div>
+    <div id="noise-wall"></div>
 
     <button id="rand-btn">RAND</button>
 
     <script>
-        // JS: The Logic
-        const textContainer = document.getElementById('data-stream');
+        const wall = document.getElementById('noise-wall');
         const btn = document.getElementById('rand-btn');
+        
+        // A mix of alphanumeric and symbols for texture
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\|[]{}<>-+*?!';
 
-        // Configuration
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
-        // Adjust density based on screen size
-        const calculateCharCount = () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            // Rough estimation of how many chars fit nicely
-            return Math.floor((width * height) / 40); 
-        };
-
-        function generateRandomString(length) {
-            let result = '';
-            const charactersLength = characters.length;
-            for ( let i = 0; i < length; i++ ) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-                // Occasionally insert spaces for visual breathing room
-                if (Math.random() > 0.95) result += ' '; 
-            }
-            return result;
-        }
-
-        function refreshText() {
-            // Apply a quick glitch effect
-            textContainer.classList.add('glitch');
-            textContainer.style.opacity = '0.2';
+        function generateNoise() {
+            // Get screen dimensions
+            const w = window.innerWidth;
+            const h = window.innerHeight;
             
-            setTimeout(() => {
-                const count = calculateCharCount();
-                textContainer.innerText = generateRandomString(count);
-                textContainer.classList.remove('glitch');
-                textContainer.style.opacity = '0.8';
-            }, 150); // Delay slightly to let the glitch feel real
+            // Estimate characters needed to fill screen
+            // Assuming approx 8px width and 14px height per char (monospace)
+            // We add a multiplier (1.2) to ensure it overflows slightly rather than leaving gaps
+            const charWidth = 8.5; 
+            const charHeight = 14; 
+            const cols = w / charWidth;
+            const rows = h / charHeight;
+            const totalChars = Math.floor(cols * rows * 1.2); 
+
+            let str = '';
+            for (let i = 0; i < totalChars; i++) {
+                // Heavier weight on letters than symbols for readability
+                str += chars.charAt(Math.floor(Math.random() * chars.length));
+                // Random spacing for texture
+                if (Math.random() > 0.98) str += ' '; 
+            }
+            
+            wall.innerText = str;
         }
 
-        // Initialize on load
-        window.onload = refreshText;
+        function triggerUpdate() {
+            // Visual feedback
+            wall.classList.add('glitch-effect');
+            
+            // Short delay to allow the eye to register the "refresh"
+            setTimeout(() => {
+                generateNoise();
+                wall.classList.remove('glitch-effect');
+            }, 100);
+        }
 
-        // Add event listener
-        btn.addEventListener('click', refreshText);
+        // Init
+        generateNoise();
 
-        // Update on resize to maintain density
+        // Interactions
+        btn.addEventListener('click', triggerUpdate);
+        
+        // Re-calculate on resize (orientation change on mobile)
+        let resizeTimer;
         window.addEventListener('resize', () => {
-            refreshText();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(generateNoise, 200);
         });
-
     </script>
 </body>
 </html>
