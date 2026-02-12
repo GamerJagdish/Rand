@@ -1,4 +1,4 @@
-# Contributing to UPI MCC Checker
+# Contributing to Rand
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
